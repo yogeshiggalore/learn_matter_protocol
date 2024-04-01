@@ -3,9 +3,11 @@
 	This project test L298N motor driver.
 */
 
+/* define two motors */
 #define L298N_MOTOR_A 1
 #define L298N_MOTOR_B 2
 
+/* define motor direction */
 #define L298N_DIR_FORWARD	0
 #define L298N_DIR_REVERSE	1
 
@@ -14,33 +16,47 @@
 #define L298N_PIN_IN2 7
 #define L298N_PIN_IN3 8
 #define L298N_PIN_IN4 9
-#define L298N_PIN_ENA 9
-#define L298N_PIN_ENB 10
+#define L298N_PIN_ENA A0
+#define L298N_PIN_ENB A1
 
-#define L298N_SPEED_ADC_MIN	0
+/* PWM control value */
+#define L298N_SPEED_ADC_MIN	127
 #define L298N_SPEED_ADC_MAX	255
 #define L298N_SPEED_PER_MIN	0
 #define L298N_SPEED_PER_MAX	100
 
-
+/* set L298N pin modes */
 void L298N_Set_Pin_Modes(void);
+
+/* turnoff all motors */
 bool L298N_TurnOff_Motor(int motor);
-bool L298N_Control_Speed( int motor, int speed, int direction );
+
+/* control speed and direction */
+bool L298N_Control_Speed( int motor, int direction, int speed );
 
 int speedVal = 0;
 
 void setup()
 {
+  Serial.begin(115200);
+  Serial.println(" L298N motor driver test code ");
+  
+  Serial.println("Setting L298N pin modes");
 	L298N_Set_Pin_Modes();
+
+  Serial.println("Turn off motors ");
 	L298N_TurnOff_Motor(L298N_MOTOR_A);
 	L298N_TurnOff_Motor(L298N_MOTOR_B);
+
 }
 
 void loop()
 {
-	L298N_Control_Speed( L298N_MOTOR_A, speedVal );
-	L298N_Control_Speed( L298N_MOTOR_B, speedVal );
-	delay(10000);
+	bool ret;
+
+  ret = L298N_Control_Speed( L298N_MOTOR_A, L298N_DIR_FORWARD, speedVal );
+	ret = L298N_Control_Speed( L298N_MOTOR_B, L298N_DIR_FORWARD, speedVal );
+	delay(5000);
 	speedVal += 10;
 	if( speedVal > 100 )
 	{
@@ -81,12 +97,14 @@ bool L298N_TurnOff_Motor(int motor)
 	return action;
 }
 
-bool L298N_Control_Speed( int motor, int speed, int direction )
+bool L298N_Control_Speed( int motor, int direction, int speed )
 {
 	bool action = false;
 	int val=0;
 	
 	val = map( speed, L298N_SPEED_PER_MIN, L298N_SPEED_PER_MAX, L298N_SPEED_ADC_MIN, L298N_SPEED_ADC_MAX );
+  Serial.print("Speed set to: ");
+  Serial.println(val);
 
 	if (motor == L298N_MOTOR_A)
 	{
