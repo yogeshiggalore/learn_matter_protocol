@@ -8,19 +8,19 @@
 #define L298N_MOTOR_B 2
 
 /* define motor direction */
-#define L298N_DIR_FORWARD	0
-#define L298N_DIR_REVERSE	1
+#define L298N_DIR_FORWARD	1
+#define L298N_DIR_REVERSE	2
 
 /* L298N pin defnition */
-#define L298N_PIN_IN1 6
-#define L298N_PIN_IN2 7
-#define L298N_PIN_IN3 8
-#define L298N_PIN_IN4 9
+#define L298N_PIN_IN1 D0
+#define L298N_PIN_IN2 D1
+#define L298N_PIN_IN3 D2
+#define L298N_PIN_IN4 D3
 #define L298N_PIN_ENA A0
-#define L298N_PIN_ENB A1
+#define L298N_PIN_ENB A4
 
 /* PWM control value */
-#define L298N_SPEED_ADC_MIN	127
+#define L298N_SPEED_ADC_MIN	0
 #define L298N_SPEED_ADC_MAX	255
 #define L298N_SPEED_PER_MIN	0
 #define L298N_SPEED_PER_MAX	100
@@ -56,7 +56,7 @@ void loop()
 
   ret = L298N_Control_Speed( L298N_MOTOR_A, L298N_DIR_FORWARD, speedVal );
 	ret = L298N_Control_Speed( L298N_MOTOR_B, L298N_DIR_FORWARD, speedVal );
-	delay(5000);
+	delay(3000);
 	speedVal += 10;
 	if( speedVal > 100 )
 	{
@@ -111,13 +111,13 @@ bool L298N_Control_Speed( int motor, int direction, int speed )
 		analogWrite( L298N_PIN_ENA, val );
 		if( direction == L298N_DIR_FORWARD )
 		{
-			digitalWrite( L298N_PIN_IN1, LOW );
-			digitalWrite( L298N_PIN_IN2, HIGH );
+			digitalWrite( L298N_PIN_IN1, HIGH );
+			digitalWrite( L298N_PIN_IN2, LOW );
 		}
 		else
 		{
-			digitalWrite( L298N_PIN_IN1, HIGH );
-			digitalWrite( L298N_PIN_IN2, LOW );
+			digitalWrite( L298N_PIN_IN1, LOW );
+			digitalWrite( L298N_PIN_IN2, HIGH );
 		}
 		action = true;
 	}
@@ -126,13 +126,13 @@ bool L298N_Control_Speed( int motor, int direction, int speed )
 		analogWrite( L298N_PIN_ENB, val );
 		if( direction == L298N_DIR_FORWARD )
 		{
-			digitalWrite( L298N_PIN_IN3, LOW );
-			digitalWrite( L298N_PIN_IN4, HIGH );
+			digitalWrite( L298N_PIN_IN3, HIGH );
+			digitalWrite( L298N_PIN_IN4, LOW );
 		}
 		else
 		{
-			digitalWrite( L298N_PIN_IN3, HIGH );
-			digitalWrite( L298N_PIN_IN4, LOW );
+			digitalWrite( L298N_PIN_IN3, LOW );
+			digitalWrite( L298N_PIN_IN4, HIGH );
 		}
 		action = true;
 	}
